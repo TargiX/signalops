@@ -17,28 +17,18 @@ export function KpiCard({
   return (
     <section
       className={cn(
-        "relative min-h-[132px] min-w-0 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-1)]",
-        tone === "good" && "border-l-[var(--success)]",
-        tone === "warn" && "border-l-[var(--warning)]",
-        tone === "bad" && "border-l-[var(--danger)]",
-        tone === "neutral" && "border-l-[var(--accent)]",
+        "relative min-h-[132px] min-w-0 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-1)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-2)] cursor-default group",
       )}
     >
-      <div className="absolute inset-x-0 bottom-0 grid h-8 grid-cols-12 opacity-80">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <span
-            key={index}
-            className={cn(
-              "self-end border-r border-[var(--surface)]",
-              tone === "good" && "bg-[var(--success-soft)]",
-              tone === "warn" && "bg-[var(--warning-soft)]",
-              tone === "bad" && "bg-[var(--danger-soft)]",
-              tone === "neutral" && "bg-[var(--accent-soft)]",
-            )}
-            style={{ height: `${26 + ((index * 17) % 58)}%` }}
-          />
-        ))}
-      </div>
+      <div 
+        className={cn(
+          "absolute inset-0 opacity-[0.03] transition-opacity group-hover:opacity-[0.06]",
+          tone === "good" && "bg-[radial-gradient(circle_at_top_right,var(--success),transparent_60%)]",
+          tone === "warn" && "bg-[radial-gradient(circle_at_top_right,var(--warning),transparent_60%)]",
+          tone === "bad" && "bg-[radial-gradient(circle_at_top_right,var(--danger),transparent_60%)]",
+          tone === "neutral" && "bg-[radial-gradient(circle_at_top_right,var(--accent),transparent_60%)]"
+        )} 
+      />
       <div className="flex items-start justify-between gap-4">
         <div className="relative">
           <p className="text-[11px] font-medium uppercase tracking-[0.03em] text-[var(--mute)]">

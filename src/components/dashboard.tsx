@@ -22,7 +22,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { LatencyChart, ThroughputChart } from "@/components/charts";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  LatencyChart, 
+  ThroughputChart,
+  SpendDonutChart,
+  PerformanceScatterChart,
+  TrafficAreaChart
+} from "@/components/charts";
 import { GenerationTable } from "@/components/generation-table";
 import { KpiCard } from "@/components/kpi-card";
 import {
@@ -527,7 +534,7 @@ export function Dashboard() {
                   key={item}
                   onClick={() => setRange(item)}
                   className={cn(
-                    "h-8 min-w-0 flex-1 rounded-md px-2 text-[12.5px] font-medium text-[var(--mute)] transition-colors sm:flex-none sm:px-3",
+                    "h-8 min-w-0 flex-1 cursor-pointer rounded-md px-2 text-[12.5px] font-medium text-[var(--mute)] transition-colors sm:flex-none sm:px-3",
                     range === item && "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-1)]",
                   )}
                 >
@@ -535,49 +542,65 @@ export function Dashboard() {
                 </button>
               ))}
             </div>
-            <button className="inline-flex h-10 min-w-0 items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] hover:bg-[var(--surface-mute)]">
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] transition-colors hover:bg-[var(--surface-mute)]"
+            >
               <RefreshCcw className={cn("size-4", isFetching && "animate-spin")} />
               Refresh
-            </button>
-            <button
+            </motion.button>
+            <motion.button 
               onClick={handleExport}
-              className="inline-flex h-10 min-w-0 items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] hover:bg-[var(--surface-mute)]"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] transition-colors hover:bg-[var(--surface-mute)]"
             >
               <Download className="size-4" />
               Export
-            </button>
+            </motion.button>
           </div>
         </header>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <KpiCard
-            title="Generations"
-            value={formatNumber(metrics.totalVolume)}
-            delta="+18.4% over previous window"
-            icon={Sparkles}
-            tone="good"
-          />
-          <KpiCard
-            title="Provider Spend"
-            value={formatCurrency(metrics.totalSpend)}
-            delta="Cost per success down 6.2%"
-            icon={CircleDollarSign}
-            tone="neutral"
-          />
-          <KpiCard
-            title="P95 Latency"
-            value={formatMs(metrics.weightedP95)}
-            delta="Alibaba + fal.ai driving tail"
-            icon={Gauge}
-            tone="warn"
-          />
-          <KpiCard
-            title="Active Queue"
-            value={formatNumber(metrics.activeJobs)}
-            delta={`${metrics.weightedFailure.toFixed(1)}% weighted failure rate`}
-            icon={Zap}
-            tone={metrics.weightedFailure > 5 ? "bad" : "neutral"}
-          />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
+            <KpiCard
+              title="Generations"
+              value={formatNumber(metrics.totalVolume)}
+              delta="+18.4% over previous window"
+              icon={Sparkles}
+              tone="good"
+            />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+            <KpiCard
+              title="Provider Spend"
+              value={formatCurrency(metrics.totalSpend)}
+              delta="Cost per success down 6.2%"
+              icon={CircleDollarSign}
+              tone="neutral"
+            />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}>
+            <KpiCard
+              title="P95 Latency"
+              value={formatMs(metrics.weightedP95)}
+              delta="Alibaba + fal.ai driving tail"
+              icon={Gauge}
+              tone="warn"
+            />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
+            <KpiCard
+              title="Active Queue"
+              value={formatNumber(metrics.activeJobs)}
+              delta={`${metrics.weightedFailure.toFixed(1)}% weighted failure rate`}
+              icon={Zap}
+              tone={metrics.weightedFailure > 5 ? "bad" : "neutral"}
+            />
+          </motion.div>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr]">
@@ -590,6 +613,18 @@ export function Dashboard() {
           </Panel>
           <Panel title="Latency Tail" eyebrow="p95 by hour" action={routingApplied ? "Tail reduced" : "SLO: 12s"}>
             <LatencyChart data={effectiveTimeline} />
+          </Panel>
+        </section>
+
+        <section className="grid gap-4 xl:grid-cols-3">
+          <Panel title="Spend Distribution" eyebrow="Cost by Provider">
+            <SpendDonutChart data={effectiveProviders} />
+          </Panel>
+          <Panel title="Performance Matrix" eyebrow="Speed vs Reliability">
+            <PerformanceScatterChart data={effectiveProviders} />
+          </Panel>
+          <Panel title="Traffic Wave" eyebrow="Cumulative Volume">
+            <TrafficAreaChart data={effectiveTimeline} />
           </Panel>
         </section>
 
@@ -670,62 +705,94 @@ export function Dashboard() {
           </Panel>
 
           <Panel title="Incident Feed" eyebrow="Routing recommendations">
-            <div className="space-y-3">
+            <motion.div 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.08 } }
+              }}
+              className="space-y-3"
+            >
               {data.incidents.map((incident) => (
-                <Link
+                <motion.div 
                   key={incident.id}
-                  href={`/incidents/${incident.id}`}
-                  className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3"
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+                  }}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex gap-3">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-md bg-[var(--warning-soft)] text-[var(--warning)]">
-                        <AlertTriangle className="size-3.5" />
-                      </span>
-                      <div>
-                        <h3 className="text-[13.5px] font-semibold text-[var(--text)]">
-                          {incident.title}
-                        </h3>
-                        <p className="mt-1 text-xs leading-5 text-[var(--text-dim)]">
-                          {incident.detail}
-                        </p>
+                  <Link
+                    href={`/incidents/${incident.id}`}
+                    className="block cursor-pointer rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 transition-shadow hover:shadow-[var(--shadow-2)]"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex gap-3">
+                        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-[var(--warning-soft)] text-[var(--warning)]">
+                          <AlertTriangle className="size-3.5" />
+                        </span>
+                        <div>
+                          <h3 className="text-[13.5px] font-semibold text-[var(--text)]">
+                            {incident.title}
+                          </h3>
+                          <p className="mt-1 text-xs leading-5 text-[var(--text-dim)]">
+                            {incident.detail}
+                          </p>
+                        </div>
                       </div>
+                      <span
+                        className={cn(
+                          "rounded-md px-2 py-1 text-xs font-medium",
+                          severityStyle[incident.severity],
+                        )}
+                      >
+                        {incident.age}
+                      </span>
                     </div>
-                    <span
-                      className={cn(
-                        "rounded-md px-2 py-1 text-xs font-medium",
-                        severityStyle[incident.severity],
-                      )}
-                    >
-                      {incident.age}
-                    </span>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
-              <button
+              <motion.button
                 onClick={() => setRoutingApplied(true)}
                 disabled={routingApplied}
+                whileHover={routingApplied ? {} : { scale: 1.015 }}
+                whileTap={routingApplied ? {} : { scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className={cn(
-                  "inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[var(--border)] text-sm font-medium shadow-[var(--shadow-1)]",
+                  "inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] text-sm font-medium transition-colors",
                   routingApplied
-                    ? "bg-[var(--success-soft)] text-[var(--success)]"
-                    : "bg-[var(--accent)] [color:white] hover:bg-[var(--accent-hover)]",
+                    ? "bg-[var(--success-soft)] text-[var(--success)] shadow-[var(--shadow-1)]"
+                    : "bg-[var(--accent)] [color:white] hover:bg-[var(--accent-hover)] shadow-md",
                 )}
               >
                 <GitBranch className="size-4" />
                 {routingApplied ? "Routing rule active" : "Apply routing rule"}
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           </Panel>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-[0.85fr_1.45fr]">
           <Panel title="Top Consumers" eyebrow="Credit burn and reliability">
-            <div className="space-y-3">
+            <motion.div 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.05 } }
+              }}
+              className="space-y-3"
+            >
               {data.consumers.map((consumer, index) => (
-                <div
+                <motion.div
                   key={consumer.id}
-                  className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3"
+                  variants={{
+                    hidden: { opacity: 0, x: -10 },
+                    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 25 } }
+                  }}
+                  className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 transition-colors hover:bg-[var(--surface-mute)]"
                 >
                   <div className="grid size-9 place-items-center rounded-md border border-[var(--border)] bg-[var(--surface-mute)] font-mono text-sm font-semibold text-[var(--text)]">
                     {index + 1}
@@ -748,9 +815,9 @@ export function Dashboard() {
                       {formatNumber(consumer.credits)} credits
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </Panel>
 
           <section className="grid gap-4 md:grid-cols-3">
@@ -797,38 +864,49 @@ function SavedViewBar({
   onSelect: (view: SavedView) => void;
 }) {
   return (
-    <section className="grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-1)] md:grid-cols-3">
-      {savedViews.map((view) => (
-        <button
-          key={view.id}
-          onClick={() => onSelect(view.id)}
-          className={cn(
-            "rounded-lg border p-3 text-left transition-colors",
-            activeView === view.id
-              ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-              : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-mute)]",
-          )}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                "grid size-6 place-items-center rounded-md text-xs font-semibold",
-                activeView === view.id
-                  ? "bg-[var(--accent)] [color:white]"
-                  : "bg-[var(--surface-mute)] text-[var(--mute)]",
-              )}
-            >
-              {view.id === "ops" ? "1" : view.id === "triage" ? "2" : "3"}
-            </span>
-            <span className="text-sm font-semibold text-[var(--text)]">
-              {view.name}
-            </span>
-          </div>
-          <p className="mt-2 text-xs leading-5 text-[var(--text-dim)]">
-            {view.detail}
-          </p>
-        </button>
-      ))}
+    <section className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-mute)] p-2 shadow-inner overflow-hidden md:flex-row">
+      {savedViews.map((view) => {
+        const isActive = activeView === view.id;
+        return (
+          <button
+            key={view.id}
+            onClick={() => onSelect(view.id)}
+            className="relative flex min-w-[200px] flex-1 cursor-pointer flex-col items-start rounded-lg p-3 text-left outline-none"
+          >
+            {isActive && (
+              <motion.div
+                layoutId="active-view-pill"
+                className="absolute inset-0 rounded-lg bg-[var(--surface)] shadow-[var(--shadow-2)] border border-[var(--border)]"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <div className="relative z-10 flex items-center gap-2">
+              <span
+                className={cn(
+                  "grid size-6 place-items-center rounded-md text-xs font-semibold transition-colors duration-300",
+                  isActive
+                    ? "bg-[var(--accent)] text-white"
+                    : "bg-[color-mix(in_oklch,var(--text)_8%,transparent)] text-[var(--mute)]"
+                )}
+              >
+                {view.id === "ops" ? "1" : view.id === "triage" ? "2" : "3"}
+              </span>
+              <span className={cn(
+                "text-sm font-semibold transition-colors duration-300",
+                isActive ? "text-[var(--text)]" : "text-[var(--text-dim)] group-hover:text-[var(--text)]"
+              )}>
+                {view.name}
+              </span>
+            </div>
+            <p className={cn(
+              "relative z-10 mt-2 text-xs leading-5 transition-colors duration-300",
+              isActive ? "text-[var(--text-dim)]" : "text-[var(--mute)]"
+            )}>
+              {view.detail}
+            </p>
+          </button>
+        );
+      })}
     </section>
   );
 }
@@ -876,18 +954,21 @@ function InvestigationWorkbench({
       <Panel title="Incident Triage" eyebrow="Selectable investigation">
         <div className="space-y-2">
           {incidents.map((incident) => (
-            <div
+            <motion.div
               key={incident.id}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={cn(
                 "rounded-lg border transition-colors",
                 selectedIncident.id === incident.id
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[var(--shadow-1)]"
                   : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-mute)]",
               )}
             >
               <button
                 onClick={() => onIncidentSelect(incident.id)}
-                className="w-full p-3 text-left"
+                className="w-full cursor-pointer p-3 text-left outline-none"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -910,11 +991,11 @@ function InvestigationWorkbench({
               </button>
               <Link
                 href={`/incidents/${incident.id}`}
-                className="mx-3 mb-3 inline-flex text-xs font-semibold text-[var(--accent)] hover:underline"
+                className="mx-3 mb-3 inline-flex cursor-pointer text-xs font-semibold text-[var(--accent)] hover:underline"
               >
                 Open incident detail
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Panel>
@@ -947,10 +1028,10 @@ function InvestigationWorkbench({
               key={job.id}
               onClick={() => onJobSelect(job)}
               className={cn(
-                "grid w-full grid-cols-[1fr_auto] items-center gap-3 rounded-lg border p-3 text-left transition-colors",
+                "grid w-full grid-cols-[1fr_auto] items-center gap-3 rounded-lg border p-3 text-left transition-all hover:scale-[1.01] active:scale-[0.98]",
                 selectedGeneration?.id === job.id
                   ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-mute)]",
+                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-mute)] hover:shadow-sm",
               )}
             >
               <div className="min-w-0">
@@ -970,7 +1051,7 @@ function InvestigationWorkbench({
 
         <button
           onClick={onFocusQueue}
-          className="mt-4 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-sm font-medium text-[var(--text)] shadow-[var(--shadow-1)] hover:bg-[var(--surface-mute)]"
+          className="mt-4 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-sm font-medium text-[var(--text)] shadow-[var(--shadow-1)] transition-all hover:bg-[var(--surface-mute)] active:scale-95"
         >
           <SlidersHorizontal className="size-4" />
           Focus queue on this provider
@@ -1045,10 +1126,10 @@ function InvestigationWorkbench({
           onClick={onApplyRule}
           disabled={routingApplied}
           className={cn(
-            "mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border text-sm font-medium shadow-[var(--shadow-1)]",
+            "mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border text-sm font-medium shadow-[var(--shadow-1)] transition-all active:scale-[0.98]",
             routingApplied
               ? "border-[var(--border)] bg-[var(--success-soft)] text-[var(--success)]"
-              : "border-[var(--accent)] bg-[var(--accent)] [color:white] hover:bg-[var(--accent-hover)]",
+              : "border-[var(--accent)] bg-[var(--accent)] [color:white] hover:bg-[var(--accent-hover)] hover:shadow-md",
           )}
         >
           {routingApplied ? (
@@ -1113,7 +1194,13 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-1)]">
+    <motion.section
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-1)] transition-all hover:shadow-[var(--shadow-2)]"
+    >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.03em] text-[var(--mute)]">{eyebrow}</p>
@@ -1126,7 +1213,7 @@ function Panel({
         ) : null}
       </div>
       {children}
-    </section>
+    </motion.section>
   );
 }
 
@@ -1230,7 +1317,7 @@ function ProviderTable({ providers }: { providers: Provider[] }) {
       {providers.map((provider) => (
         <div
           key={provider.id}
-          className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3"
+          className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 transition-all hover:scale-[1.01] hover:shadow-[var(--shadow-2)] cursor-default"
         >
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -1350,7 +1437,7 @@ function ModelRankedList({
         const score = scoreModel(model);
 
         return (
-          <div key={model.id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3">
+          <div key={model.id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 transition-all hover:scale-[1.01] hover:shadow-[var(--shadow-2)] cursor-default">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -1473,7 +1560,13 @@ function MiniBrief({
   text: string;
 }) {
   return (
-    <section className="min-h-[188px] min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)]">
+    <motion.section
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, ease: "backOut" }}
+      className="min-h-[188px] min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-2)] cursor-default"
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="grid size-10 place-items-center rounded-lg bg-[var(--success-soft)] text-[var(--success)]">
           <Icon className="size-4" />
@@ -1482,6 +1575,6 @@ function MiniBrief({
       </div>
       <h3 className="mt-5 text-sm font-semibold text-[var(--text)]">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-[var(--text-dim)]">{text}</p>
-    </section>
+    </motion.section>
   );
 }

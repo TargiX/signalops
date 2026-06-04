@@ -209,7 +209,7 @@ export function GenerationTable({
   const virtualRows = rowVirtualizer.getVirtualItems();
 
   return (
-    <section className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-1)]">
+    <section className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-1)] transition-all hover:shadow-[var(--shadow-2)]">
       <div className="flex min-w-0 flex-col gap-3 border-b border-[var(--border)] p-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-[var(--text)]">Generation Queue</h2>
@@ -218,7 +218,7 @@ export function GenerationTable({
           </p>
         </div>
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
-          <label className="flex h-9 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text-dim)] shadow-[var(--shadow-1)]">
+          <label className="flex h-9 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text-dim)] shadow-[var(--shadow-1)] transition-all focus-within:ring-2 focus-within:ring-[var(--accent-soft)] hover:border-[var(--accent-soft)]">
             <Search className="size-4 text-[var(--mute)]" />
             <input
               value={globalFilter}
@@ -230,7 +230,7 @@ export function GenerationTable({
           <select
             value={providerFilter}
             onChange={(event) => setProviderFilter(event.target.value)}
-            className="h-9 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] shadow-[var(--shadow-1)] outline-none"
+            className="h-9 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] shadow-[var(--shadow-1)] outline-none transition-all hover:border-[var(--accent-soft)] focus:ring-2 focus:ring-[var(--accent-soft)]"
           >
             <option value="all">All providers</option>
             {providers.map((provider) => (
@@ -242,7 +242,7 @@ export function GenerationTable({
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="h-9 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] shadow-[var(--shadow-1)] outline-none"
+            className="h-9 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] shadow-[var(--shadow-1)] outline-none transition-all hover:border-[var(--accent-soft)] focus:ring-2 focus:ring-[var(--accent-soft)]"
           >
             <option value="all">All states</option>
             {Object.keys(statusStyle).map((status) => (
