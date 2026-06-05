@@ -177,7 +177,7 @@ export function Dashboard() {
   const [selectedGeneration, setSelectedGeneration] =
     useState<Generation | null>(null);
 
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["ops-snapshot", range],
     queryFn: () => fetchOpsSnapshot(range),
   });
@@ -543,10 +543,14 @@ export function Dashboard() {
               ))}
             </div>
             <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
+              onClick={() => refetch()}
+              disabled={isFetching}
+              aria-busy={isFetching}
+              aria-label={isFetching ? "Refreshing operations snapshot" : "Refresh operations snapshot"}
+              whileHover={{ scale: isFetching ? 1 : 1.02 }}
+              whileTap={{ scale: isFetching ? 1 : 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] transition-colors hover:bg-[var(--surface-mute)]"
+              className="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text)] shadow-[var(--shadow-1)] transition-colors hover:bg-[var(--surface-mute)] disabled:cursor-wait disabled:opacity-70"
             >
               <RefreshCcw className={cn("size-4", isFetching && "animate-spin")} />
               Refresh
