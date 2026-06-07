@@ -34,6 +34,21 @@ pnpm dev
 
 The dev server is pinned to [http://localhost:3020](http://localhost:3020) to avoid colliding with other local portfolio/product apps.
 
+## Demo script
+
+For a fast portfolio review, the dashboard opens with a **Guided incident replay** rail directly under the header. It turns the surface into a self-explaining demo — a first-run reviewer can follow one incident end to end in well under 90 seconds.
+
+1. Pick a scenario — **Alibaba p95 spike**, **FLUX retry storm**, or **Qwen cost bleed**. Each is backed by the existing mock data, not a separate mock.
+2. Step through the rail. Every step drives the real controls (no dead overlay):
+   - **Signal detected** — selects the incident and scrolls to the investigation workbench.
+   - **Affected jobs** — switches the saved view and focuses the virtualized 10k-row queue on the impacted provider.
+   - **Draft mitigation** — sets the routing trigger mode and traffic-drain slider.
+   - **Projected KPI delta** — simulates the rule, recomputing the KPI cards and every chart from the same derived state.
+   - **Export & handoff** — scrolls back to the header so you can export the post-mitigation snapshot as CSV.
+3. Use **Back**/**Next step** to move, click any step chip to jump, and **Finish replay** (or **Exit replay**) to restore the clean baseline.
+
+Each step also surfaces a short "technical proof" line calling out what it exercises: TanStack Query hydration, TanStack Table + Virtual filtering, fully controlled rule-builder state, derived-memo chart re-renders, and the snapshot CSV export. Loading and error states are untouched — the rail only orchestrates state the user could set by hand.
+
 ## Portfolio Notes
 
 This project is meant to sit next to Phosphene as a different signal:
