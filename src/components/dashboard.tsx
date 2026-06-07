@@ -31,6 +31,15 @@ import {
   TrafficAreaChart
 } from "@/components/charts";
 import { GenerationTable } from "@/components/generation-table";
+import {
+  IncidentReplay,
+  replayBaseline,
+  replayScenarios,
+  type ModelView,
+  type ProviderView,
+  type SavedView,
+  type TriggerMode,
+} from "@/components/incident-replay";
 import { KpiCard } from "@/components/kpi-card";
 import {
   fetchOpsSnapshot,
@@ -45,10 +54,6 @@ import { cn, formatCurrency, formatMs, formatNumber } from "@/lib/utils";
 
 const ranges = ["24h", "7d", "30d"] as const;
 type Range = (typeof ranges)[number];
-type ProviderView = "table" | "risk";
-type ModelView = "matrix" | "ranked";
-type SavedView = "ops" | "triage" | "cost";
-type TriggerMode = "latency" | "failure";
 
 const activeStatuses: GenerationStatus[] = [
   "failed",
@@ -176,6 +181,8 @@ export function Dashboard() {
   const [trafficShare, setTrafficShare] = useState(68);
   const [selectedGeneration, setSelectedGeneration] =
     useState<Generation | null>(null);
+  const [replayScenarioId, setReplayScenarioId] = useState<string | null>(null);
+  const [replayStepIndex, setReplayStepIndex] = useState(0);
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["ops-snapshot", range],
@@ -322,6 +329,54 @@ export function Dashboard() {
       spendDelta: Number((selectedProvider.spend * 0.18 * share).toFixed(2)),
     };
   }, [selectedProvider, trafficShare]);
+
+  function goToReplayStep(scenarioId: string, index: number) {
+    const scenario = replayScenarios.find((item) => item.id === scenarioId);
+
+    if (!scenario) {
+      return;
+    }
+
+    const boundedIndex = Math.max(0, Math.min(index, scenario.steps.length - 1));
+    const step = scenario.steps[boundedIndex];
+
+    // Drive the real dashboard controls so the replay is never a dead overlay.
+    setSelectedIncidentId(step.state.selectedIncidentId);
+    setSavedView(step.state.savedView);
+    setProviderView(step.state.providerView);
+    setModelView(step.state.modelView);
+    setQueueFocusProviderId(step.state.queueFocusProviderId);
+    setQueueFocusStatus(step.state.queueFocusStatus);
+    setTriggerMode(step.state.triggerMode);
+    setTrafficShare(step.state.trafficShare);
+    setRoutingApplied(step.state.routingApplied);
+    setSelectedGeneration(null);
+    setReplayScenarioId(scenarioId);
+    setReplayStepIndex(boundedIndex);
+
+    if (typeof document !== "undefined") {
+      requestAnimationFrame(() => {
+        document
+          .getElementById(step.scrollTo)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+
+  function exitReplay() {
+    setReplayScenarioId(null);
+    setReplayStepIndex(0);
+    setSelectedIncidentId(replayBaseline.selectedIncidentId);
+    setSavedView(replayBaseline.savedView);
+    setProviderView(replayBaseline.providerView);
+    setModelView(replayBaseline.modelView);
+    setQueueFocusProviderId(replayBaseline.queueFocusProviderId);
+    setQueueFocusStatus(replayBaseline.queueFocusStatus);
+    setTriggerMode(replayBaseline.triggerMode);
+    setTrafficShare(replayBaseline.trafficShare);
+    setRoutingApplied(replayBaseline.routingApplied);
+    setSelectedGeneration(null);
+  }
 
   function activateSavedView(view: SavedView) {
     setSavedView(view);
@@ -502,7 +557,10 @@ export function Dashboard() {
       </div>
 
       <div className="relative mx-auto flex w-full max-w-[1480px] flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
-        <header className="flex min-w-0 flex-col gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)] lg:flex-row lg:items-center lg:justify-between">
+        <header
+          id="replay-header"
+          className="flex min-w-0 scroll-mt-4 flex-col gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)] lg:flex-row lg:items-center lg:justify-between"
+        >
           <div className="flex min-w-0 items-center gap-4">
             <div className="grid size-11 shrink-0 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
               <Activity className="size-5" />
@@ -568,7 +626,24 @@ export function Dashboard() {
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <IncidentReplay
+          scenarios={replayScenarios}
+          activeScenarioId={replayScenarioId}
+          stepIndex={replayStepIndex}
+          liveImpact={ruleImpact}
+          onStart={(scenarioId) => goToReplayStep(scenarioId, 0)}
+          onStep={(index) => {
+            if (replayScenarioId) {
+              goToReplayStep(replayScenarioId, index);
+            }
+          }}
+          onExit={exitReplay}
+        />
+
+        <section
+          id="replay-kpis"
+          className="grid scroll-mt-4 gap-4 md:grid-cols-2 xl:grid-cols-4"
+        >
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
             <KpiCard
               title="Generations"
@@ -638,6 +713,7 @@ export function Dashboard() {
         />
 
         {selectedIncident && selectedProvider ? (
+          <div id="replay-investigation" className="scroll-mt-4">
           <InvestigationWorkbench
             affectedJobs={affectedJobs}
             incidents={data.incidents}
@@ -669,6 +745,7 @@ export function Dashboard() {
             onTrafficShareChange={setTrafficShare}
             onTriggerModeChange={setTriggerMode}
           />
+          </div>
         ) : null}
 
         <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr_0.9fr]">
@@ -846,15 +923,17 @@ export function Dashboard() {
           </section>
         </section>
 
-        <GenerationTable
-          rows={data.generations}
-          providers={data.providers}
-          models={data.models}
-          focusProviderId={queueFocusProviderId}
-          focusStatus={queueFocusStatus}
-          selectedRowId={selectedGeneration?.id}
-          onRowSelect={setSelectedGeneration}
-        />
+        <div id="replay-queue" className="scroll-mt-4">
+          <GenerationTable
+            rows={data.generations}
+            providers={data.providers}
+            models={data.models}
+            focusProviderId={queueFocusProviderId}
+            focusStatus={queueFocusStatus}
+            selectedRowId={selectedGeneration?.id}
+            onRowSelect={setSelectedGeneration}
+          />
+        </div>
       </div>
     </main>
   );
