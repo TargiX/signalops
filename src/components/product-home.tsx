@@ -101,10 +101,7 @@ export function ProductHome() {
     snapshot.providers.reduce((sum, item) => sum + item.volume, 0);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[var(--background)] text-[var(--text)]">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_67%_14%,rgba(87,129,255,0.16),transparent_38%),linear-gradient(180deg,#fbfcff_0%,#ffffff_42%,#fbfdff_100%)]" />
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(78,105,170,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(78,105,170,0.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
-
+    <main className="min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_67%_8%,rgba(87,129,255,0.14),transparent_30%),linear-gradient(180deg,#fbfcff_0%,#ffffff_42%,#fbfdff_100%)] text-[var(--text)]">
       <div className="relative z-10 mx-auto w-full max-w-[1280px] px-5 py-5 sm:px-8 lg:px-10">
         <Header />
 
@@ -147,7 +144,7 @@ export function ProductHome() {
                 href="/incidents/inc_411"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
-                  "h-11 rounded-lg border-[var(--border)] bg-white/70 px-5 text-[13px] font-semibold text-[var(--text)] shadow-sm backdrop-blur-xl hover:bg-white",
+                  "h-11 rounded-lg border-[var(--border)] bg-white/90 px-5 text-[13px] font-semibold text-[var(--text)] shadow-sm hover:bg-white",
                 )}
               >
                 <span className="mr-2 grid size-5 place-items-center rounded-full border border-[var(--border)] text-[var(--accent)]">
@@ -180,7 +177,7 @@ export function ProductHome() {
           className="grid gap-5 lg:grid-cols-[1.35fr_0.9fr]"
         >
           <motion.div variants={itemVariants}>
-            <section className="rounded-lg border border-[var(--border)] bg-white/76 p-6 shadow-[var(--shadow-panel)] backdrop-blur-2xl">
+            <section className="rounded-lg border border-[var(--border)] bg-white/90 p-6 shadow-[var(--shadow-panel)]">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <p className="font-mono text-[10px] font-bold uppercase text-[var(--mute)]">Live Snapshot</p>
@@ -217,7 +214,7 @@ export function ProductHome() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <section className="h-full rounded-lg border border-[var(--border)] bg-white/76 p-7 shadow-[var(--shadow-panel)] backdrop-blur-2xl">
+            <section className="h-full rounded-lg border border-[var(--border)] bg-white/90 p-7 shadow-[var(--shadow-panel)]">
               <p className="font-mono text-[10px] font-bold uppercase text-[var(--mute)]">Product Loop</p>
               <h2 className="mt-2 text-xl font-bold text-[var(--text-strong)]">From signal to change</h2>
               <ol className="relative mt-7 space-y-5">
@@ -298,7 +295,7 @@ export function ProductHome() {
                   href="/cockpit"
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
-                    "h-11 rounded-lg border-[var(--border)] bg-white/44 px-5 text-[13px] font-semibold text-[var(--text)] backdrop-blur-xl hover:bg-white/70",
+                    "h-11 rounded-lg border-[var(--border)] bg-white/72 px-5 text-[13px] font-semibold text-[var(--text)] hover:bg-white",
                   )}
                 >
                   Book a demo
@@ -335,7 +332,7 @@ function Header() {
       <div className="flex items-center gap-3">
         <Link
           href="/cockpit"
-          className="hidden h-9 items-center rounded-lg border border-[var(--border)] bg-white/62 px-4 text-[12px] font-semibold text-[var(--text-dim)] shadow-sm backdrop-blur-xl hover:bg-white sm:inline-flex"
+          className="hidden h-9 items-center rounded-lg border border-[var(--border)] bg-white/90 px-4 text-[12px] font-semibold text-[var(--text-dim)] shadow-sm hover:bg-white sm:inline-flex"
         >
           Log in
         </Link>
@@ -357,9 +354,9 @@ function Header() {
 function SignalCartography() {
   return (
     <div className="relative h-[360px] w-full overflow-visible sm:h-[460px] lg:h-[540px]">
-      <div className="absolute left-0 top-0 h-[520px] w-[720px] origin-top-left scale-[0.52] rounded-lg border border-[#e9eefb] bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.86)] backdrop-blur-2xl sm:scale-[0.76] lg:left-[5%] lg:w-full lg:scale-100">
+      <div className="absolute left-0 top-0 h-[520px] w-[720px] origin-top-left scale-[0.52] rounded-lg border border-[#e9eefb] bg-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.86)] sm:scale-[0.76] lg:left-[5%] lg:w-full lg:scale-100">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(74,109,240,0.12),transparent_24%),radial-gradient(circle_at_50%_50%,transparent_0_25%,rgba(93,126,225,0.08)_25.3%,transparent_25.8%,transparent_37%,rgba(93,126,225,0.07)_37.3%,transparent_37.8%,transparent_49%,rgba(93,126,225,0.06)_49.3%,transparent_49.8%)]" />
-        <div className="absolute inset-0 opacity-55 [background-image:radial-gradient(#7fa0ff_1px,transparent_1.2px)] [background-size:18px_18px] [mask-image:radial-gradient(circle_at_50%_50%,black,transparent_67%)]" />
+        <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(#7fa0ff_1px,transparent_1.2px)] [background-size:18px_18px]" />
         <div className="absolute left-5 top-5 z-10 flex items-center gap-4">
           <p className="font-mono text-[11px] font-bold uppercase text-[var(--text-dim)]">Live Signal Cartography</p>
         </div>
@@ -393,7 +390,7 @@ function SignalCartography() {
           <ProviderCard key={item.name} {...item} />
         ))}
 
-        <div className="absolute bottom-8 left-4 z-20 w-[176px] rounded-lg border border-[var(--border)] bg-white/84 p-4 shadow-[0_22px_52px_rgba(62,88,145,0.16)] backdrop-blur-2xl lg:left-[-3%]">
+        <div className="absolute bottom-8 left-4 z-20 w-[176px] rounded-lg border border-[var(--border)] bg-white/94 p-4 shadow-[0_22px_52px_rgba(62,88,145,0.16)] lg:left-[-3%]">
           <ControlSlider label="Latency (p95)" left="0ms" right="20s+" tone="blue" />
           <ControlSlider label="Queue Pressure" left="Low" right="High" tone="green" />
           <div className="mt-4 space-y-2">
@@ -438,7 +435,7 @@ function ProviderCard({
   };
   return (
     <div
-      className="absolute z-30 w-[148px] rounded-lg border border-[var(--border)] bg-white/86 p-4 shadow-[0_18px_42px_rgba(71,94,148,0.14)] backdrop-blur-xl"
+      className="absolute z-30 w-[148px] rounded-lg border border-[var(--border)] bg-white/95 p-4 shadow-[0_18px_42px_rgba(71,94,148,0.14)]"
       style={{ left: x, top: y }}
     >
       <div className="flex items-center gap-2">
@@ -529,7 +526,7 @@ function PillarCard({
   visual: React.ReactNode;
 }) {
   return (
-    <motion.section variants={itemVariants} className="rounded-lg border border-[var(--border)] bg-white/76 p-6 shadow-[var(--shadow-panel)] backdrop-blur-xl">
+    <motion.section variants={itemVariants} className="rounded-lg border border-[var(--border)] bg-white/90 p-6 shadow-[var(--shadow-panel)]">
       <div className="flex gap-4">
         <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#d8e3ff] bg-[#eef4ff] text-[var(--accent)]">
           <Icon className="size-5" />
@@ -632,7 +629,7 @@ function GlassSignalModule() {
         alt=""
         width={1716}
         height={916}
-        className="absolute left-1/2 top-1/2 h-auto w-[118%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain [mask-image:radial-gradient(ellipse_74%_80%_at_50%_50%,#000_55%,transparent_100%)]"
+        className="absolute left-1/2 top-1/2 h-auto w-[118%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
         sizes="(min-width: 1024px) 680px, 100vw"
       />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 620 260" fill="none" aria-hidden="true">
@@ -646,7 +643,7 @@ function GlassSignalModule() {
       {tags.map(({ label, pos, Icon }) => (
         <span
           key={label}
-          className={cn("absolute z-20 inline-flex h-8 items-center gap-2 rounded-lg border border-[var(--border)] bg-white/82 px-3 text-[11px] font-bold text-[var(--text-dim)] shadow-[0_8px_20px_rgba(65,88,140,0.11)] backdrop-blur-xl", pos)}
+          className={cn("absolute z-20 inline-flex h-8 items-center gap-2 rounded-lg border border-[var(--border)] bg-white/94 px-3 text-[11px] font-bold text-[var(--text-dim)] shadow-[0_8px_20px_rgba(65,88,140,0.11)]", pos)}
         >
           <Icon className="size-3.5 text-[var(--accent)]" />
           {label}
