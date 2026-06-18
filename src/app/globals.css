@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(0.985 0.004 80);
-  --foreground: oklch(0.22 0.01 270);
+  --background: #fbfcff;
+  --foreground: #10182f;
   --surface: #ffffff;
-  --surface-mute: oklch(0.97 0.006 80);
-  --border: oklch(0.92 0.005 80);
-  --border-soft: oklch(0.95 0.005 80);
-  --text: oklch(0.22 0.01 270);
-  --text-dim: oklch(0.42 0.012 270);
-  --mute: oklch(0.58 0.012 270);
-  --accent: oklch(0.52 0.18 268);
-  --accent-soft: oklch(0.92 0.05 268);
-  --accent-hover: oklch(0.48 0.18 268);
+  --surface-mute: #f5f8ff;
+  --border: #dfe7f6;
+  --border-soft: #edf2fb;
+  --text: #17213c;
+  --text-strong: #07122b;
+  --text-dim: #62708b;
+  --mute: #8c97ad;
+  --accent: #3459df;
+  --accent-soft: #edf3ff;
+  --accent-hover: #2548c6;
   --success: oklch(0.6 0.12 150);
   --success-soft: oklch(0.94 0.05 150);
   --warning: oklch(0.7 0.14 75);
@@ -21,8 +22,9 @@
   --danger-soft: oklch(0.95 0.05 25);
   --info: oklch(0.55 0.13 230);
   --info-soft: oklch(0.94 0.05 230);
-  --shadow-1: 0 1px 2px rgba(20, 20, 30, 0.04), 0 1px 0 rgba(20, 20, 30, 0.02);
-  --shadow-2: 0 2px 6px rgba(20, 20, 30, 0.06), 0 1px 0 rgba(20, 20, 30, 0.03);
+  --shadow-1: 0 1px 2px rgba(44, 67, 118, 0.06), 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-2: 0 10px 28px rgba(58, 82, 140, 0.1), 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-panel: 0 18px 55px rgba(62, 85, 133, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.82);
   --shadow-focus: 0 0 0 3px oklch(0.92 0.05 268);
   --radius-md: 0.5rem;
   --card: var(--surface);
