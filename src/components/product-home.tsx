@@ -631,6 +631,7 @@ function GlassSignalModule() {
         height={916}
         className="absolute left-1/2 top-1/2 h-auto w-[118%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
         sizes="(min-width: 1024px) 680px, 100vw"
+        style={{ maskImage: "linear-gradient(to left, rgba(0, 0, 0, 1) 76%, rgba(0, 0, 0, 0))" }}
       />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 620 260" fill="none" aria-hidden="true">
         <path d="M96 70 C184 74 228 90 292 108" stroke="rgba(83,120,255,0.3)" />
