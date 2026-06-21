@@ -1,5 +1,8 @@
 # SignalOps
 
+**Live demo:** [signalops.cc](https://signalops.cc)  
+**Source:** [github.com/TargiX/signalops](https://github.com/TargiX/signalops)
+
 SignalOps is a React dashboard for operating AI image-generation products. It is intentionally built as a custom interface rather than a dropped-in enterprise grid, so the implementation shows state management, data density, virtualization, and design-system work.
 
 ## What It Demonstrates
