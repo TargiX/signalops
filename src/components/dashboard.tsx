@@ -21,7 +21,7 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { 
   LatencyChart, 
@@ -490,6 +490,30 @@ export function Dashboard() {
     // Mount-only: apply the incoming replay link to dashboard controls.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // The mount effect above may run before the ops snapshot resolves, so
+  // setReplayRoutingRule had no cache entry to update. Re-apply the routing
+  // rule once for the deep-linked step as soon as data is available.
+  const deepLinkRoutingApplied = useRef(false);
+
+  useEffect(() => {
+    if (deepLinkRoutingApplied.current || !data || !replayScenarioId) {
+      return;
+    }
+
+    deepLinkRoutingApplied.current = true;
+
+    const scenario = replayScenarios.find(
+      (item) => item.id === replayScenarioId,
+    );
+    const step = scenario?.steps[replayStepIndex];
+
+    if (scenario && step) {
+      setReplayRoutingRule(scenario, step);
+    }
+    // Fires once when the snapshot first arrives for a URL-hydrated replay.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   // Keep the URL in sync with the active replay so every beat is copy-shareable.
   useEffect(() => {
